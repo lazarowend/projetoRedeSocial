@@ -1,0 +1,118 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Página com Menu Lateral Fixo</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="{% static 'base/css/base.css' %}">
+
+  {% block 'head' %}
+  {% endblock %}
+
+</head>
+
+<body>
+  <div class="sidebar position-fixed h-100">
+    <h1>BANBOOK</h1>
+    <div class="sidebar-nav mt-5">
+      <ul>
+        {% if user_logado %}
+        <li class="nav-item">
+          <a href="{% url 'usuarios:home' %}" class="nav-link p-2 rounded-2">
+            <div class="d-flex align-items-center">
+              <img src="{% static 'base/img/icons/pagina-inicial.png' %}" alt="" class="mr-2">
+              <p class="m-0 px-2">Página Inicial</p>
+            </div>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="" class="nav-link p-2 rounded-2">
+            <div class="d-flex align-items-center">
+              <img src="{% static 'base/img/icons/lupa-de-pesquisa.png' %}" alt="" class="mr-2">
+              <p class="m-0 px-2">Pesquisar</p>
+            </div>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="" class="nav-link p-2 rounded-2">
+            <div class="d-flex align-items-center">
+              <img src="{% static 'base/img/icons/explorar.png' %}" alt="" class="mr-2">
+              <p class="m-0 px-2">Explorar</p>
+            </div>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="{% url 'usuarios:criar_publi' user_logado.username %}" class="nav-link p-2 rounded-2">
+            <div class="d-flex align-items-center">
+              <img src="{% static 'base/img/icons/aba.png' %}" alt="" class="mr-2">
+              <p class="m-0 px-2">Criar</p>
+            </div>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="{% url 'usuarios:perfil_user' user_logado.username %}" class="nav-link p-2 rounded-2">
+            <div class="d-flex align-items-center">
+              <img src="{% static 'base/img/icons/usuario-de-perfil.png' %}" alt="" class="mr-2">
+              <p class="m-0 px-2">Perfil</p>
+            </div>
+          </a>
+        </li>
+        {% else %}
+
+        <li class="nav-item">
+          <a href="{% url 'usuarios:home' %}" class="nav-link p-2 rounded-2">
+            <div class="d-flex align-items-center">
+              <img src="{% static 'base/img/icons/pagina-inicial.png' %}" alt="" class="mr-2">
+              <p class="m-0 px-2">Página Inicial</p>
+            </div>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="" class="nav-link p-2 rounded-2">
+            <div class="d-flex align-items-center">
+              <img src="{% static 'base/img/icons/lupa-de-pesquisa.png' %}" alt="" class="mr-2">
+              <p class="m-0 px-2">Pesquisar</p>
+            </div>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="" class="nav-link p-2 rounded-2">
+            <div class="d-flex align-items-center">
+              <img src="{% static 'base/img/icons/explorar.png' %}" alt="" class="mr-2">
+              <p class="m-0 px-2">Explorar</p>
+            </div>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="{% url 'login:login' %}" class="nav-link p-2 rounded-2">
+            <div class="d-flex align-items-center">
+              <img src="{% static 'base/img/icons/adicionar-amigo.png' %}" alt="" class="mr-2">
+              <p class="m-0 px-2">Criar conta</p>
+            </div>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="{% url 'login:login' %}" class="nav-link p-2 rounded-2">
+            <div class="d-flex align-items-center">
+              <img src="{% static 'base/img/icons/entrar.png' %}" alt="" class="mr-2">
+              <p class="m-0 px-2">Login</p>
+            </div>
+          </a>
+        </li>
+
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+  
+  <div class="content">
+    {% block 'body' %}
+
+    {% endblock %}
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

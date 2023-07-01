@@ -1,0 +1,216 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block 'head' %}
+ <link rel="stylesheet" href="{% static 'home/css/home.css' %}">
+{% endblock %}
+
+{% block 'body' %}
+
+{% if user_logado %}
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-11">
+
+      <div class="container-post p-3">
+
+                {% if posts %}
+                {% for post in posts %}
+
+                <div class="post">
+                    <div class="post-head">
+                      <div class="user-name">
+                        <a href="{% url 'usuarios:perfil_user' post.user.username %}" class="text-dark text-decoration-none">{{ post.user.username }}</a>
+                      </div>
+                      <div class="apagar">
+                        <button type="button" data-id="{{ post.id }}">
+                          <img src="{% static 'base/img/icons/botao-excluir.png' %}" alt="">
+                        </button>
+                        </a>
+                      </div>
+                    </div>
+                    <div class="post-img">
+                      <img src="{{ MEDIA_URL }}{{ post.imagem.url }}" alt="" >
+                    </div>
+                    <div class="post-footer">
+                      <a href=""><img src="{% static 'base/img/icons/gostar.png' %}" alt=""></a>
+                      <button type="button" class="border-0 btn"><img src="{% static 'base/img/icons/comente.png' %}" alt=""></button>
+                    </div>
+                    <div class="post-line"></div>
+                    <div class="post-comentarios">
+                      <ul class="list-group" id="lista_{{post.id}}">
+                        {% if post.post_comentarios %}
+                        {% for comentario in post.post_comentarios.all %}
+                        <li class="list-group-item">{{ comentario.user.username }} - {{ comentario.comentario }}</li>
+                        {% endfor %}
+                        {% else %}
+                        <li class="list-group-item">Sem comentarios</li>
+                        {% endif %}
+                      </ul>
+                    </div>
+
+
+
+                    <div class="form-comentario">
+                      <form action="" method="GET">
+                        <div class="form-group id_post" data_id_post="{{ post.id }}">
+                          <input type="text" placeholder="Faça seu comentario" name="comentario" id="comentario{{post.id}}" class="campo-comentario" required>
+                          <button type="button" class="btn_comentar" onclick="comentar('{{ post.id }}', document.getElementById('comentario{{post.id}}').value)">
+                            <img src="{% static 'base/img/icons/mandar.png' %}" alt="">
+                          </button>
+                        </div>
+                      </form>
+                    </div>
+
+
+
+                </div>
+                {% endfor %}
+                {% endif %}
+
+
+
+       </div>
+    </div>
+
+
+
+    <div class="col-1 profile-side p-0">
+        <div class="meu_perfil text-center mt-5">
+          
+          <a href="" class="img-profile">
+            {% if user_logado.profile.user_img %}
+            <img src="{{ MEDIA_URL }}{{ user_logado.profile.user_img.url }}" alt="" width="100px" height="100px">
+            {% else %}
+            <img src="{% static 'home/img/perfil.png' %}" alt="" width="100px" height="100px">
+            {% endif %}
+          </a>
+          <a href="{% url 'usuarios:perfil_user' user_logado.username %}" class=" text-decoration-none text-black"><p class="mb-1"><p id="username">{{ user_logado.username }}</p></p></a>
+          <a href="{% url 'usuarios:logout_user' %}"><p class="mb-1"><span class="badge text-bg-warning">desconectar</span></p></a>
+          <hr class="mb-2">
+        </div>
+        {% for u in user %}
+        <div class="usuarios mt-1 text-center">
+          {% if u.profile.user_img %}
+          <img src="{{ MEDIA_URL }}{{ u.profile.user_img.url }}" alt="" width="50px" height="50px" class="rounded-5">
+          {% else %}
+          <img src="{% static 'home/img/perfil.png' %}" alt="" width="50px" height="50px" class="rounded-5">
+          {% endif %}
+          <a href="{% url 'usuarios:perfil_user' u.username %}"><p class="mb-1">{{ u.username }}</p></a>
+          <a href="{% url 'usuarios:perfil_user' u.username %}"><p class="mb-1"><span class="badge text-bg-info">seguir</span></p></a>
+        </div>
+        {% endfor %}
+        
+      </div>
+
+  </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% else %}
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-11">
+
+      <div class="container-post p-3">
+
+                {% if posts %}
+                {% for post in posts %}
+
+                <div class="post">
+                    <div class="post-head">
+                      <div class="user-name"><a href="{% url 'usuarios:perfil_user' post.user.username %}" class="text-dark text-decoration-none">{{ post.user.username }}</a></div>
+                      <div class="apagar"><a href=""><img src="{% static 'base/img/icons/botao-excluir.png' %}" alt=""></a></div>
+                    </div>
+                    <div class="post-img">
+                      <img src="{{ MEDIA_URL }}{{ post.imagem.url }}" alt="" >
+                    </div>
+                    <div class="post-footer">
+                      <a href=""><img src="{% static 'base/img/icons/gostar.png' %}" alt=""></a>
+                      <a href=""><img src="{% static 'base/img/icons/comente.png' %}" alt=""></a>
+                    </div>
+                    <div class="post-line"></div>
+                    <div class="post-comentarios">
+                      <ul class="list-group">
+                        {% if comentario in post.post_comentarios.all %}
+                        {% for comentario in post.post_comentarios.all %}
+                        <li class="list-group-item">{{ comentario.user.username }} - {{ comentario.comentario }}</li>
+                        {% endfor %}
+                        {% else %}
+                        <li class="list-group-item">Sem comentarios</li>
+                        {% endif %}
+                      </ul>
+                    </div>
+                    <div class="form-comentario">
+                      <form>
+                        <div class="form-group">
+                          <input type="text" placeholder="Faça seu comentario" class="campo-comentario">
+                          <button type="submit"><img src="{% static 'base/img/icons/mandar.png' %}" alt=""></button>
+                        </div>
+                      </form>
+                    </div>
+                </div>
+
+
+                {% endfor %}
+                {% endif %}
+       </div>
+    </div>
+
+
+    <div class="col-1 profile-side p-0">
+        <div class="meu_perfil text-center mt-5">
+          <a href="{% url 'login:fazer_cadastro' %}" class="img-profile">
+            <img src="{% static 'home/img/perfil.png' %}" alt="" width="100px" height="100px">
+          </a>
+          <a href="{% url 'login:fazer_cadastro' %}">
+            <p class="mb-1"><span class="badge text-bg-success">criar conta</span></p>
+          </a>
+          <a href="{% url 'login:login' %}">
+            <p class="mb-1"><span class="badge text-bg-secondary">Faça login</span></p>
+          </a>
+          <hr class="mb-2">
+        </div>
+        {% for u in user %}
+        <div class="usuarios mt-1 text-center">
+          {% if u.profile.user_img %}
+          <img src="{{ MEDIA_URL }}{{ u.profile.user_img.url }}" alt="" width="50px" height="50px" class="rounded-5">
+          {% else %}
+          <img src="{% static 'home/img/perfil.png' %}" alt="" width="50px" height="50px" class="rounded-5">
+          {% endif %}
+          <a href="{% url 'usuarios:perfil_user' u.username %}"><p class="mb-1">{{ u.username }}</p></a>
+          <a href="{% url 'login:login' %}"><p class="mb-1"><span class="badge text-bg-info">seguir</span></p></a>
+        </div>
+        {% endfor %}
+        
+      </div>
+
+  </div>
+
+</div>
+{% endif %}
+{% include 'home/ajax.html' %}
+<script src="https://code.jquery.com/jquery-3.7.0.js" integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM=" crossorigin="anonymous"></script>
+<script src="{% static 'home/js/home.js' %}"></script>
+{% endblock %}

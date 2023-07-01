@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block 'head' %}
+    <link rel="stylesheet" href="{% static 'home/css/criar.css' %}">
+    <link rel="stylesheet" href="{% static 'home/css/home.css' %}">
+{% endblock %}
+
+{% block 'body' %}
+
+<div class="container-fluid">
+
+    <div class="row">
+      <div class="col-10 center">
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} text-center">
+          <p>{{ message }}</p>
+        </div>
+        {% endfor %}
+        {% endif %}
+        <form method="POST" class="purple-form" enctype="multipart/form-data" action="{% url 'usuarios:criar_publi' user_logado.username %}">{% csrf_token %}
+            <div class="mb-3">
+              <label for="imagem" class="form-label">Escolha sua imagem</label>
+              <input type="file" class="form-control" id="imagem" name="imagem">
+            </div>
+            <div class="mb-3">
+              <label for="legenda" class="form-label">Legenda</label>
+              <textarea class="form-control" id="legenda" name="legenda" rows="3"></textarea>
+            </div>
+            <button type="submit" class="btn btn-white">Publicar</button>
+          </form>
+
+    </div>
+
+    <div class="col-1 profile-side p-0">
+      <div class="meu_perfil text-center mt-5">
+        
+        <a href="" class="img-profile">
+          {% if user_logado.profile.user_img %}
+          <img src="{{ MEDIA_URL }}{{ user_logado.profile.user_img.url }}" alt="" width="100px" height="100px">
+          {% else %}
+          <img src="{% static 'home/img/perfil.png' %}" alt="" width="100px" height="100px">
+          {% endif %}
+        </a>
+        <a href="{% url 'usuarios:perfil_user' user_logado.username %}" class=" text-decoration-none text-black"><p class="mb-1">{{ user_logado.username }}</p></a>
+        <a href="{% url 'usuarios:logout_user' %}"><p class="mb-1"><span class="badge text-bg-warning">desconectar</span></p></a>
+        <hr class="mb-2">
+      </div>
+            <hr class="mb-4">
+      </div>
+        
+        </div>
+      </div>
+  
+    </div>
+  
+  </div>
+
+{% endblock %}

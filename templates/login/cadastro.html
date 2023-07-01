@@ -1,0 +1,42 @@
+{% extends 'base_login.html' %}
+{% load static %}
+
+{% block 'title' %}
+  cadastro-page
+{% endblock %}
+
+
+{% block 'head' %}
+<link rel="stylesheet" href="{% static 'login/css/cadastro.css' %}">
+{% endblock %}
+
+{% block 'body' %}
+    <div class="signup-form">
+      <h2>Cadastre-se já</h2>
+      {% if messages %}
+      {% for message in messages %}
+      <div class="alert alert-{{ message.tags }} text-center">
+        <p>{{ message }}</p>
+      </div>
+      {% endfor %}
+      {% endif %}
+      <form action="{% url 'login:fazer_cadastro' %}" method="POST">{% csrf_token %}
+        <div class="form-group">
+          <label for="nome">Nome:</label>
+          <input type="text" id="nome" name="nome" required>
+        </div>
+        <div class="form-group">
+          <label for="email">Email:</label>
+          <input type="email" id="email" name="email" required>
+        </div>
+        <div class="form-group">
+          <label for="password">Senha:</label>
+          <input type="password" id="senha" name="senha" required>
+        </div>
+        <button type="submit">Criar Conta</button>
+        <div class="login-link">
+          <a href="{% url 'login:login' %}">Já tem uma conta? Faça login</a>
+        </div>
+      </form>
+    </div>
+  {% endblock %}
