@@ -111,7 +111,7 @@
                         </div>
                     </div>
                     {% if user_logado == post.user %}
-                    <img src="{% static 'base/img/icons/remover.png' %}" onclick="deletar_post({{post.id}})" alt="" style="cursor: pointer;">
+                    <img src="{% static 'base/img/icons/remover.png' %}" onclick="deletar_post({{ post.id }})" alt="" style="cursor: pointer;">
                     {% endif %}
                 </div>
                 <div class="post-legenda">
