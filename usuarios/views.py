@@ -39,33 +39,38 @@ def home(request):
         }
         return render(request, 'home/home.html', context)
 
-def logout_view(request):
+
+
+def logout_user(request):
     logout(request)
     return redirect('usuarios:home')
 
-def perfil(request, username):
+
+
+def perfil(request, id):
+    print('aqui')
     if request.user.is_authenticated:
         user_logado = User.objects.get(id=request.user.id)
-        user_perfil = get_object_or_404(User, username=username)
-        post = Post.objects.filter(user=user_perfil).order_by('-dt_criacao')
-        comentarios_post = Comentario.objects.filter(post__in=post)
+        user_perfil = get_object_or_404(User, id=id)
+        posts = Post.objects.filter(user=user_perfil).order_by('-dt_criacao')
+        comentarios_post = Comentario.objects.filter(post__in=posts)
 
         context = {
             'user_logado': user_logado,
             'user_perfil': user_perfil,
-            'post': post,
+            'posts': posts,
             'comentarios_post': comentarios_post
         }
 
         return render(request, 'home/perfil.html', context)
     else:
-        user_perfil = get_object_or_404(User, username=username)
-        post = Post.objects.filter(user=user_perfil).order_by('-dt_criacao')
-        comentarios_post = Comentario.objects.filter(post__in=post)
+        user_perfil = get_object_or_404(User, id=id)
+        posts = Post.objects.filter(user=user_perfil).order_by('-dt_criacao')
+        comentarios_post = Comentario.objects.filter(post__in=posts)
 
         context = {
             'user_perfil': user_perfil,
-            'post': post,
+            'posts': posts,
             'comentarios_post': comentarios_post
         }
 
@@ -127,5 +132,41 @@ def comentar(request, id):
         }
 
         return JsonResponse({'status': 'Save', 'comentario': data_comentario})
+    else:
+        return JsonResponse({'status': 0})
+    
+@csrf_exempt
+def apagar_post(resquest, id):
+    if resquest.method == "POST":
+        try:
+            post = Post.objects.get(id=id)
+            post.delete()
+            return JsonResponse({'status': 1})
+        except:
+            return JsonResponse({'status': 0})
+        
+@csrf_exempt
+def bucar_usuario(request):
+    if request.method == 'POST':
+        buscar = request.POST.get('buscar')
+        print(buscar)
+
+        users = User()
+        if buscar is not None:
+            users = UserProfile.objects.filter(user__username__icontains=buscar)
+        else:
+            users = UserProfile.objects.all()
+
+        data_user = []
+
+        for user in users:
+            user_data = {
+                'username': user.user.username,
+                'imagem': user.user_img.url if user.user_img else None,
+                'id': user.user.id,
+            }
+            data_user.append(user_data)
+
+        return JsonResponse({'status': 'Save', 'data_user': data_user})
     else:
         return JsonResponse({'status': 0})

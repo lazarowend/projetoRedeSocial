@@ -1,42 +1,24 @@
-{% extends 'base_login.html' %}
 {% load static %}
-
-
-{% block 'title' %}
-  login-page
-{% endblock %}
-
-{% block 'head' %}
-    <link rel="stylesheet" href="{% static 'login/css/login.css' %}">
-{% endblock %}
-
-{% block 'body' %}
-<div class="login-form">
-  <h2>Faça seu login</h2>
-  {% if messages %}
-  {% for message in messages %}
-  <div class="alert alert-{{ message.tags }} text-center">
-    <p>{{ message }}</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>login</title>
+  <link rel="stylesheet" href="{% static 'login/css/login.css' %}">
+</head>
+<body>
+  <div class="login-form">
+    <h1>Bannetwork</h1>
+    <h2>Login</h2>
+    <form action="{% url 'login:login' %}" method="POST">{% csrf_token %}
+      <input type="text" name="nome" placeholder="Nome de usuário" required>
+      <input type="password" name="senha" placeholder="Senha" required>
+      <button type="submit">Entrar</button>
+    </form>
+    <p>Ainda não possui uma conta? <a href="{% url 'login:fazer_cadastro' %}">Cadastre-se</a></p>
   </div>
-  {% endfor %}
-  {% endif %}
-  <form action="{% url 'login:login' %}" method="POST">{% csrf_token %}
-    <div class="form-group">
+</body>
+</html>
 
-      <label for="nome">Nome:</label>
-      <input type="text" id="nome" name="nome" required>
 
-    </div>
-    <div class="form-group">
-
-      <label for="password">Senha:</label>
-      <input type="password" id="senha" name="senha" required>
-      
-    </div>
-    <button type="submit">Entrar</button>
-    <div class="create-account-link">
-      <a href="{% url 'login:fazer_cadastro' %}">Criar uma conta</a>
-    </div>
-  </form>
-</div>
-{% endblock %}

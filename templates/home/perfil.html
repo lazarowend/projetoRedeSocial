@@ -1,166 +1,270 @@
-{% extends 'base.html' %}
 {% load static %}
-{% block 'head' %}
- <link rel="stylesheet" href="{% static 'home/css/perfil.css' %}">
-{% endblock %}
 
-{% block 'body' %}
+<!DOCTYPE html>
+<html lang="en">
 
-{% if user_logado %}
-<div class="perfil">
-  <div class="row">
-    <div class="col-4 text-end p-5">
-      {% if user_perfil.profile.user_img %}
-      <div class="img-perfil"><img src="{{ MEDIA_URL }}{{ user_perfil.profile.user_img.url }}" class="rounded-5"" alt="" width=" 200px" height="200px"></div>
-      {% else %}
-      <div class="img-perfil"><img src="{% static 'home/img/perfil.png' %}" alt="" width="200px" height="200px" class="rounded-5">
-      </div>
-      {% endif %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>perfil</title>
+    <link rel="stylesheet" href="{% static 'home/css/perfil.css' %}">
+</head>
+
+<body>
+    <div class="container">
+        <div class="nav">
+            <div class="logo">
+                <h1>Bannetwork</h1>
+            </div>
+            
+            <ul class="nav-bar">
+                <li>
+                    <a href="{% url 'usuarios:home' %}">
+                      <img src="{% static 'base/img/icons/botao-home.png' %}" alt="">
+                    </a>
+                  </li>
+                <li>
+                    <a href="#">
+                      <img src="{% static 'base/img/icons/adicionar.png' %}" alt="">
+                    </a>
+                </li>
+                <li>
+                  <a href="{% url 'usuarios:perfil_user' id=user_perfil.id %}">
+                    <img src="{% static 'base/img/icons/user.png' %}" alt="">
+                  </a>
+                </li>
+                <li>
+                  <a href="{% url 'usuarios:logout_user' %}" >
+                    <img src="{% static 'base/img/icons/sair.png' %}" alt="">
+                </a>
+              </li>
+            </ul>
+            <ul class="nav-bar-mobile">
+                <li>
+                    <a id="menu-mobile">
+                      <img src="{% static 'base/img/icons/barra-de-menu.png' %}" alt="">
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="menu-mobile">
+            <ul>
+                <li>
+                    <p>home</p>
+                    <img src="{% static 'base/img/icons/botao-home.png' %}" alt="">                </li>
+                <li>
+                    <p>criar</p>
+                    <img src="{% static 'base/img/icons/adicionar.png' %}" alt="">                </li>
+                <li>
+                    <p>logout</p>
+                    <a href="{% url 'usuarios:logout_user' %}" >
+                      <img src="{% static 'base/img/icons/sair.png' %}" alt="">
+                  </a></li>
+            </ul>
+        </div>
     </div>
-    <div class="col-8 p-5">
-      <div class="links d-flex align-content-center">
-        <h3 class="m-0">{{ user_perfil.username }}</h3>
-        <button type="button" class="btn mx-4"><a href="#" class="text-decoration-none text-black">Editar
-            perfil</a></button>
-        <button type="button" class="btn"><a href="#" class="text-decoration-none text-black">Seguir</a></button>
-      </div>
-      <div class="perfil-info d-flex align-content-center">
-        <p class="mt-3"><b>1</b> publicação</p>
-        <p class="px-3 mt-3"><b>500</b> seguidores</p>
-        <p class="px-3 mt-3"><b>200</b> seguindo</p>
-      </div>
-    </div>
-    <div class="line"></div>
-    <div class="publicacao text-center">
-      <p>PUBLICAÇÕES</p>
-      <div class="container text-center">
-        <div class="container">
 
 
-          {% for p in post %}
-          <div class="post card-post">
-              <div class="post-header">
-                <h3>{{ post.user.username }}</h3>
-              </div>
-              <div class="post-image">
-                <img src="{{ MEDIA_URL }}{{ p.imagem.url }}" alt="Imagem do Post">
-              </div>
-    
-              <div class="post-actions text-start">
-                <a href="" class="mx-2"><img src="{% static 'base/img/icons/gostar.png' %}" alt=""></a>
-                <a href=""><img src="{% static 'base/img/icons/comente.png' %}" alt=""></a>
-              </div>
-              <div class="post-comments text-start">
-                <h4 class="">Comentários</h4>
-                <hr class="">
-                <ul class="list-unstyled">
-                  <ul class="list-unstyled text-start">
-                    {% for comentario in p.comentarios.all %}
-                      <li>{{ comentario.user.username }} - {{ comentario.comentario }}</li>
-                    {% endfor %}
-                    </ul>
-                </ul>
-                <div class="comment-form mt-3">
-                  <form method="post" action="">
-                    {% csrf_token %}
-                    <div class="form-group">
-                      <textarea class="form-control form-control-sm" name="comentario" placeholder="Digite seu comentário"></textarea>
+
+    <div class="feed">
+        <div class="meu-perfil-mobile">
+            <div class="profile">
+              {% if user_perfil.imagem %}
+              <img src="{{ user_perfil.imagem.url }}" alt="" width="200px" height="200px">
+              {% else %}
+              <img src="{% static 'base/img/icons/profile.png' %}" alt="" width="200px" height="200px">
+              {% endif %}
+              <p>{{ user_perfil.username }}</p>
+            </div>
+            <div class="box-btn">
+                <div class="btn-perfil editar-perfil">
+                    <p>editar perfil</p>
+                    <img src="{% static 'base/img/icons/editar.png' %}" alt="">
+                </div>
+                <div class="btn-perfil">
+                    <p>20 seguidores</p>
+                    <img src="{% static 'base/img/icons/grupo-de-usuarios.png' %}" alt="">
+                </div>
+                <div class="btn-perfil">        
+                    <p>30 seguindo</p>
+                    <img src="{% static 'base/img/icons/grupo-de-usuarios.png' %}" alt="">
+                </div>
+            </div>
+          </div>
+        <div class="feed-post">
+
+          {% for post in posts %}
+            <div class="post">
+                <div class="post-head">
+                    <div class="post-perfil">
+                      {% if post.user.profile.user_img %}
+                      <img src="{{ post.user.profile.user_img.url }}" alt="" width="40px" height="40px">
+                  {% else %}
+                      <img src="{% static 'base/img/icons/user.png' %}" alt="" width="40px" height="40px">
+                  {% endif %}
+                        <div>
+                            <a href="#"><p class="name">{{ post.user.username }}</p></a>
+                            <p class="post-date">{{ post.dt_criacao }}</p>
+                        </div>
                     </div>
-                    <button type="submit" class="btn btn-secondary btn-sm mt-1">Comentar</button>
+                    {% if user_logado == post.user %}
+                    <img src="{% static 'base/img/icons/remover.png' %}" onclick="deletar_post({{post.id}})" alt="" style="cursor: pointer;">
+                    {% endif %}
+                </div>
+                <div class="post-legenda">
+                    <p>{{ post.legenda }}</p>
+                </div>
+                <div class="post-img">
+                    <img src="{{ MEDIA_URL }}{{ post.imagem.url }}" alt="">
+                </div>
+                <div class="post-link">
+                  <a href=""><img src="{% static 'base/img/icons/coracao.png' %}" alt=""></a>
+                  <a href=""><img src="{% static 'base/img/icons/comente (1).png' %}" alt=""></a>
+                </div>
+                <div class="post-comentarios">
+                    <ul class="comentarios-lista">
+                      {% for comentario in post.post_comentarios.all %}
+                      <li>{{ comentario.user.username }} - {{ comentario.comentario }}</li>
+                      {% endfor %}
+                    </ul>
+                    <form class="comentarios-form" action="GET">
+                      <input type="text" placeholder="Comentar" id="comentario{{post.id}}">
+                      <button type="button" onclick="comentar('{{ post.id }}', document.getElementById('comentario{{post.id}}').value)"><img src="{% static 'base/img/icons/enviado.png' %}" alt=""></button>
                   </form>
                 </div>
-              </div>
             </div>
             {% endfor %}
+            
 
-
-        </div>
-
-      </div>
-    </div>
-  </div>
-</div>
-
-    
-{% else %}
-
-
-
-
-    <div class="perfil">
-      <div class="row">
-        <div class="col-4 text-end p-5">
-          {% if user_perfil.profile.user_img %}
-          <div class="img-perfil"><img src="{{ MEDIA_URL }}{{ user_perfil.profile.user_img.url }}" class="rounded-5"" alt="" width=" 200px" height="200px"></div>
-          {% else %}
-          <div class="img-perfil"><img src="{% static 'home/img/perfil.png' %}" alt="" width="200px" height="200px" class="rounded-5">
-          </div>
-          {% endif %}
-        </div>
-        <div class="col-8 p-5">
-          <div class="links d-flex align-content-center">
-            <h3 class="m-0">{{ user_perfil.username }}</h3>
-            <button type="button" class="btn mx-4"><a href="#" class="text-decoration-none text-black">Editar
-                perfil</a></button>
-            <button type="button" class="btn"><a href="#" class="text-decoration-none text-black">Seguir</a></button>
-          </div>
-          <div class="perfil-info d-flex align-content-center">
-            <p class="mt-3"><b>1</b> publicação</p>
-            <p class="px-3 mt-3"><b>500</b> seguidores</p>
-            <p class="px-3 mt-3"><b>200</b> seguindo</p>
-          </div>
-        </div>
-        <div class="line"></div>
-        <div class="publicacao text-center">
-          <p>PUBLICAÇÕES</p>
-          <div class="container text-center">
-            <div class="container">
-
-
-              {% for p in post %}
-              <div class="post card-post">
-                  <div class="post-header">
-                    <h3>{{ post.user.username }}</h3>
-                  </div>
-                  <div class="post-image">
-                    <img src="{{ MEDIA_URL }}{{ p.imagem.url }}" alt="Imagem do Post">
-                  </div>
-        
-                  <div class="post-actions text-start">
-                    <a href="" class="mx-2"><img src="{% static 'base/img/icons/gostar.png' %}" alt=""></a>
-                    <a href=""><img src="{% static 'base/img/icons/comente.png' %}" alt=""></a>
-                  </div>
-                  <div class="post-comments text-start">
-                    <h4 class="">Comentários</h4>
-                    <hr class="">
-                    <ul class="list-unstyled">
-                      <ul class="list-unstyled text-start">
-                        {% for comentario in p.comentarios.all %}
-                          <li>{{ comentario.user.username }} - {{ comentario.comentario }}</li>
-                        {% endfor %}
-                        </ul>
-                    </ul>
-                    <div class="comment-form mt-3">
-                      <form method="post" action="">
-                        {% csrf_token %}
-                        <div class="form-group">
-                          <textarea class="form-control form-control-sm" name="comentario" placeholder="Digite seu comentário"></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-secondary btn-sm mt-1">Comentar</button>
-                      </form>
+            <div class="feed-editar">
+                <form class="my-form" enctype="multipart/form-data">
+                    <div class="img-perfil-editar">
+                      
+                      {% if user_perfil.imagem %}
+                      <img src="{{ user_perfil.imagem.url }}" alt="" width="200px" height="200px">
+                      {% else %}
+                      <img src="{% static 'base/img/icons/profile.png' %}" alt="" width="200px" height="200px">
+                      {% endif %}
+                        <p>alterar imagem de perfil</p>
                     </div>
-                  </div>
-                </div>
-                {% endfor %}
-
-
+                    <div class="form-group">
+                        <input type="file" id="inputImagem" name="imagem">
+                    </div>
+                    <div class="form-group">
+                      <label for="name">Nome:</label>
+                      <input type="text" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                      <label for="email">Email:</label>
+                      <input type="email" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                      <label for="password">Senha:</label>
+                      <input type="password" id="password" name="password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="post">Posts:</label>
+                        <input type="number" id="post" name="post" readonly value="6">
+                    </div>
+                    <button type="submit">Salvar</button>
+                    <button type="button" class="cancelar-edit">Cancelar</button>
+                  </form>
             </div>
 
-          </div>
+            <div class="feed-seguidores">
+                <p>MEUS SEGUIDORES</p>
+                <table>
+                    <tbody>
+                      <tr>
+                        <td><a href=""><img src="/img/perfil.jpg" alt="Perfil 1" width="50px" height="50px"></a></td>
+                        <td><a href="">nome user</a></td>
+                        <td><a href="">100 seguidores</a></td>
+                        <td><a href="">50 seguindo</a></td>
+                      </tr>
+                      <tr>
+                        <td><a href=""><img src="/img/perfil.jpg" alt="Perfil 1" width="50px" height="50px"></a></td>
+                        <td><a href="">nome user</a></td>
+                        <td><a href="">100 seguidores</a></td>
+                        <td><a href="">50 seguindo</a></td>
+                      </tr>
+                      <tr>
+                        <td><a href=""><img src="/img/perfil.jpg" alt="Perfil 1" width="50px" height="50px"></a></td>
+                        <td><a href="">nome user</a></td>
+                        <td><a href="">100 seguidores</a></td>
+                        <td><a href="">50 seguindo</a></td>
+                      </tr>
+                    </tbody>
+                  </table>
+            </div>
+
+            
+            <div class="feed-seguindo">
+                <p>ESTOU SEGUINDO</p>
+                <table>
+                    <tbody>
+                      <tr>
+                        <td><a href=""><img src="/img/perfil.jpg" alt="Perfil 1" width="50px" height="50px"></a></td>
+                        <td><a href="">nome user</a></td>
+                        <td><a href="">100 seguidores</a></td>
+                        <td><a href="">50 seguindo</a></td>
+                      </tr>
+                      <tr>
+                        <td><a href=""><img src="/img/perfil.jpg" alt="Perfil 1" width="50px" height="50px"></a></td>
+                        <td><a href="">nome user</a></td>
+                        <td><a href="">100 seguidores</a></td>
+                        <td><a href="">50 seguindo</a></td>
+                      </tr>
+                      <tr>
+                        <td><a href=""><img src="/img/perfil.jpg" alt="Perfil 1" width="50px" height="50px"></a></td>
+                        <td><a href="">nome user</a></td>
+                        <td><a href="">100 seguidores</a></td>
+                        <td><a href="">50 seguindo</a></td>
+                      </tr>
+                    </tbody>
+                  </table>
+            </div>
+
         </div>
-      </div>
+
+        <div class="feed-info">
+            <div class="meu-perfil">
+                <div class="profile">
+                  {% if user_perfil.imagem %}
+                  <img src="{{ user_perfil.imagem.url }}" alt="" width="200px" height="200px">
+                  {% else %}
+                  <img src="{% static 'base/img/icons/profile.png' %}" alt="" width="200px" height="200px">
+                  {% endif %}
+                  <p>meu nome</p>
+                </div>
+                <div class="btn-perfil editar-perfil">
+                    <p>editar perfil</p>
+                    <img src="/img/icons/editar.png" alt="">
+                </div>
+                <div class="btn-perfil seguidores">
+                    <p>20 seguidores</p>
+                    <img src="/img/icons/grupo-de-usuarios.png" alt="">
+                </div>
+                <div class="btn-perfil seguindo">        
+                    <p>30 seguindo</p>
+                    <img src="/img/icons/grupo-de-usuarios.png" alt="">
+                </div>
+              </div>
+        </div>
+        <div class="clear"></div>
+        
     </div>
-  {% endif %}
 
 
-  {% endblock %}
+
+    <div class="footer">
+        <h4>Desenvolvido por - Lázaro Wendel</h4>
+    </div>
+
+    <script
+  src="https://code.jquery.com/jquery-3.7.0.js"
+  integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM="
+  crossorigin="anonymous"></script>
+  <script src="{% static 'home/js/usuarios.js' %}"></script>
+</body>
+
+</html>

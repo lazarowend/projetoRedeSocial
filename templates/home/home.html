@@ -1,216 +1,294 @@
-{% extends 'base.html' %}
 {% load static %}
-{% block 'head' %}
- <link rel="stylesheet" href="{% static 'home/css/home.css' %}">
-{% endblock %}
+<!DOCTYPE html><html lang="en">
+  
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{% static 'home/css/home.css' %}">
+  </head>
+  
+  <body>
+    {% if user_logado %}
+    <div class="container">
+        <div class="nav">
+            <div class="logo">
+                <h1>Bannetwork</h1>
+            </div>
+            <div class="form-buscar">
+                <form>
+                    <input type="text" placeholder="Buscar" id="bucar_user" name="buscar" value="">
+                    <button type="button" onclick="buscar_cliente()"><img src="{% static 'base/img/icons/lupa.png' %}" alt="" width="32px" height="32px"></button>
+                </form>
+            </div>
+            <ul class="nav-bar">
+                <li>
+                    <a href="{% url 'usuarios:home' %}"><img src="{% static 'base/img/icons/botao-home.png' %}" alt=""></a>
+                </li>
+                <li>
+                    <a href="#"><img src="{% static 'base/img/icons/adicionar.png' %}" alt=""></a>
+                </li>
+                <li> 
+                    <a href="{% url 'usuarios:perfil_user' id=user_logado.id %}">
+                        <img src="{% static 'base/img/icons/user.png' %}" alt="">
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'usuarios:logout_user' %}" >
+                        <img src="{% static 'base/img/icons/sair.png' %}" alt="">
+                    </a>
+                </li>
+            </ul>
+            <ul class="nav-bar-mobile">
+                <li>
+                    <a id="menu-mobile"><img src="{% static 'base/img/icons/barra-de-menu.png' %}" alt=""></a>
+                </li>
+            </ul>
+        </div>
+        <div class="menu-mobile">
+            <ul>
+                <li>
+                    <p>meu perfil</p>
+                    <a href="{% url 'usuarios:perfil_user' user_logado.id %}"><img src="{% static 'base/img/icons/botao-home.png' %}" alt=""></a>
+                </li>
+                <li>
+                    <p>criar</p>
+                    <a href="#">
+                        <img src="{% static 'base/img/icons/adicionar.png' %}" alt="">
+                    </a>
+                </li>
+                <li id="mobile-buscar">
+                    <p>buscar</p>
+                    <a href="#">
+                        <img src="{% static 'base/img/icons/lupa.png' %}" alt="">
+                    </a>
+                </li>
+                <li>
+                    <p>logout</p>
+                    <a href="{% url 'usuarios:logout_user' %}">
+                        <img src="{% static 'base/img/icons/sair.png' %}" alt="">
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
 
-{% block 'body' %}
 
-{% if user_logado %}
 
-<div class="container-fluid">
-  <div class="row">
-    <div class="col-11">
+    <div class="feed">
+        <div class="form-feed">
+                <form action="">
+                    <input type="text" placeholder="Buscar" id="form-feed">
+                </form>
+        </div>
+        <div class="lista-usuarios">
+            <div class="usuarios-container">
+                {% for u in user %}
+                <div class="usuarios">
+                    {% if u.profile.user_img %}
+                  <img src="{{ u.profile.user_img.url }}" alt="" width="50px" height="50px">
+                    {% else %}
+                    <img src="{% static 'base/img/icons/user.png' %}" alt="" width="50px" height="50px">
+                    {% endif %}
+                  <a href="#"><p>{{ u.username }}</p></a>
+                </div>
+                {% endfor %}
+              </div>
+        </div>
+        <div class="feed-post">
+            {% for post in posts %}
+            <div class="post" id="id_post_{{ post.id }}">
+                <div class="post-head">
+                    <div class="post-perfil">
+                        {% if post.user.profile.user_img %}
+                        <img src="{{ post.user.profile.user_img.url }}" alt="" width="40px" height="40px">
+                    {% else %}
+                        <img src="{% static 'base/img/icons/user.png' %}" alt="" width="40px" height="40px">
+                    {% endif %}
+                        <div>
+                            <a href="#"><p class="name">{{ post.user.username }}</p></a>
+                            <p class="post-date">{{ post.dt_criacao }}</p>
+                        </div>
+                    </div>
+                    {% if user_logado == post.user %}
+                    <img src="{% static 'base/img/icons/remover.png' %}" onclick="deletar_post({{post.id}})" alt="" style="cursor: pointer;">
+                    {% endif %}
+                </div>
+                <div class="post-legenda">
+                    <p>{{ post.legenda }}</p>
+                </div>
+                <div class="post-img">
+                    <img src="{{ MEDIA_URL }}{{ post.imagem.url }}" alt="">
+                </div>
+                <div class="post-link">
+                    <a href=""><img src="{% static 'base/img/icons/coracao.png' %}" alt=""></a>
+                    <a href=""><img src="{% static 'base/img/icons/comente (1).png' %}" alt=""></a>
+                </div>
+                <div class="post-comentarios">
+                    <ul class="comentarios-lista" id="lista_{{ post.id }}">
+                        {% for comentario in post.post_comentarios.all %}
+                        <li>{{ comentario.user.username }} - {{ comentario.comentario }}</li>
+                        {% endfor %}
+                    </ul>
 
-      <div class="container-post p-3">
+                    <form class="comentarios-form" action="GET">
+                        <input type="text" placeholder="Comentar" id="comentario{{post.id}}">
+                        <button type="button" onclick="comentar('{{ post.id }}', document.getElementById('comentario{{post.id}}').value)"><img src="{% static 'base/img/icons/enviado.png' %}" alt=""></button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+            
 
-                {% if posts %}
-                {% for post in posts %}
+        </div>
 
-                <div class="post">
-                    <div class="post-head">
-                      <div class="user-name">
-                        <a href="{% url 'usuarios:perfil_user' post.user.username %}" class="text-dark text-decoration-none">{{ post.user.username }}</a>
-                      </div>
-                      <div class="apagar">
-                        <button type="button" data-id="{{ post.id }}">
-                          <img src="{% static 'base/img/icons/botao-excluir.png' %}" alt="">
+        <div class="feed-info">
+            <h3>Usuarios recentes</h3>
+            <div id="user_recente">
+
+            </div>
+        </div>
+        <div class="clear"></div>
+        
+    </div>
+    <div class="footer">
+        <h4>Desenvolvido por - Lázaro Wendel</h4>
+    </div>
+    <div class="pagina-escura"></div>
+    {% else %}
+
+
+    <div class="container">
+        <div class="nav">
+            <div class="logo">
+                <h1>Bannetwork</h1>
+            </div>
+            <div class="form-buscar">
+                <form>
+                    <input type="text" placeholder="Buscar" id="bucar_user" name="buscar" value="">
+                    <button type="button" onclick="buscar_cliente()"><img src="{% static 'base/img/icons/lupa.png' %}" alt="" width="32px" height="32px"></button>
+                </form>
+            </div>
+            <ul class="nav-bar">
+                <li>
+                    <a href="{% url 'usuarios:home' %}"><img src="{% static 'base/img/icons/botao-home.png' %}" alt=""></a>
+                </li>
+                <li>
+                    <a href="{% url 'login:login' %}"><img src="{% static 'base/img/icons/adicionar.png' %}" alt=""></a>
+                </li>
+                <li> 
+                    <a href="{% url 'login:login' %}">
+                        <img src="{% static 'base/img/icons/user.png' %}" alt="">
+                    </a>
+                </li>
+            </ul>
+            <ul class="nav-bar-mobile">
+                <li>
+                    <a id="menu-mobile"><img src="{% static 'base/img/icons/barra-de-menu.png' %}" alt=""></a>
+                </li>
+            </ul>
+        </div>
+        <div class="menu-mobile">
+            <ul>
+                <li>
+                    <p>home</p>
+                    <a href="{% url 'usuarios:home' %}">
+                        <img src="{% static 'base/img/icons/botao-home.png' %}" alt="">
+                    </a>
+                </li>
+                <li>
+                    <p>criar</p>
+                    <a href="{% url 'login:login' %}">
+                        <img src="{% static 'base/img/icons/adicionar.png' %}" alt="">
+                    </a>
+                </li>
+                <li id="mobile-buscar">
+                    <p>buscar</p>
+                    <a href="#">
+                        <img src="{% static 'base/img/icons/lupa.png' %}" alt="">
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+
+
+    <div class="feed">
+        <div class="form-feed">
+                <form action="">
+                    <input type="text" placeholder="Buscar" id="form-feed">
+                </form>
+        </div>
+
+        <div class="feed-post">
+            {% for post in posts %}
+            <div class="post" id="id_post_{{ post.id }}">
+                <div class="post-head">
+                    <div class="post-perfil">
+                        {% if post.user.profile.user_img %}
+                        <img src="{{ post.user.profile.user_img.url }}" alt="" width="40px" height="40px">
+                    {% else %}
+                        <img src="{% static 'base/img/icons/user.png' %}" alt="" width="40px" height="40px">
+                    {% endif %}
+                        <div>
+                            <a href="{% url 'usuarios:perfil_user' post.user.id %}"><p class="name">{{ post.user.username }}</p></a>
+                            <p class="post-date">{{ post.dt_criacao }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="post-legenda">
+                    <p>{{ post.legenda }}</p>
+                </div>
+                <div class="post-img">
+                    <img src="{{ MEDIA_URL }}{{ post.imagem.url }}" alt="">
+                </div>
+                <div class="post-link">
+                    <a href="{% url 'login:login' %}"><img src="{% static 'base/img/icons/coracao.png' %}" alt=""></a>
+                    <a href="{% url 'login:login' %}"><img src="{% static 'base/img/icons/comente (1).png' %}" alt=""></a>
+                </div>
+                <div class="post-comentarios">
+                    <ul class="comentarios-lista" id="lista_{{ post.id }}">
+                        {% for comentario in post.post_comentarios.all %}
+                        <li>{{ comentario.user.username }} - {{ comentario.comentario }}</li>
+                        {% endfor %}
+                    </ul>
+
+                    <form class="comentarios-form" action="GET">
+                        <input type="text" placeholder="Faça login para comentar" id="comentario{{post.id}}" disabled>
+                        <button type="button">
+                            <img src="{% static 'base/img/icons/enviado.png' %}" alt="">
                         </button>
-                        </a>
-                      </div>
-                    </div>
-                    <div class="post-img">
-                      <img src="{{ MEDIA_URL }}{{ post.imagem.url }}" alt="" >
-                    </div>
-                    <div class="post-footer">
-                      <a href=""><img src="{% static 'base/img/icons/gostar.png' %}" alt=""></a>
-                      <button type="button" class="border-0 btn"><img src="{% static 'base/img/icons/comente.png' %}" alt=""></button>
-                    </div>
-                    <div class="post-line"></div>
-                    <div class="post-comentarios">
-                      <ul class="list-group" id="lista_{{post.id}}">
-                        {% if post.post_comentarios %}
-                        {% for comentario in post.post_comentarios.all %}
-                        <li class="list-group-item">{{ comentario.user.username }} - {{ comentario.comentario }}</li>
-                        {% endfor %}
-                        {% else %}
-                        <li class="list-group-item">Sem comentarios</li>
-                        {% endif %}
-                      </ul>
-                    </div>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+            
 
+        </div>
 
-
-                    <div class="form-comentario">
-                      <form action="" method="GET">
-                        <div class="form-group id_post" data_id_post="{{ post.id }}">
-                          <input type="text" placeholder="Faça seu comentario" name="comentario" id="comentario{{post.id}}" class="campo-comentario" required>
-                          <button type="button" class="btn_comentar" onclick="comentar('{{ post.id }}', document.getElementById('comentario{{post.id}}').value)">
-                            <img src="{% static 'base/img/icons/mandar.png' %}" alt="">
-                          </button>
-                        </div>
-                      </form>
-                    </div>
-
-
+        <div class="feed-info">
+            <h3>Usuarios recentes</h3>
+                <div id="user_recente">
 
                 </div>
-                {% endfor %}
-                {% endif %}
-
-
-
-       </div>
-    </div>
-
-
-
-    <div class="col-1 profile-side p-0">
-        <div class="meu_perfil text-center mt-5">
-          
-          <a href="" class="img-profile">
-            {% if user_logado.profile.user_img %}
-            <img src="{{ MEDIA_URL }}{{ user_logado.profile.user_img.url }}" alt="" width="100px" height="100px">
-            {% else %}
-            <img src="{% static 'home/img/perfil.png' %}" alt="" width="100px" height="100px">
-            {% endif %}
-          </a>
-          <a href="{% url 'usuarios:perfil_user' user_logado.username %}" class=" text-decoration-none text-black"><p class="mb-1"><p id="username">{{ user_logado.username }}</p></p></a>
-          <a href="{% url 'usuarios:logout_user' %}"><p class="mb-1"><span class="badge text-bg-warning">desconectar</span></p></a>
-          <hr class="mb-2">
         </div>
-        {% for u in user %}
-        <div class="usuarios mt-1 text-center">
-          {% if u.profile.user_img %}
-          <img src="{{ MEDIA_URL }}{{ u.profile.user_img.url }}" alt="" width="50px" height="50px" class="rounded-5">
-          {% else %}
-          <img src="{% static 'home/img/perfil.png' %}" alt="" width="50px" height="50px" class="rounded-5">
-          {% endif %}
-          <a href="{% url 'usuarios:perfil_user' u.username %}"><p class="mb-1">{{ u.username }}</p></a>
-          <a href="{% url 'usuarios:perfil_user' u.username %}"><p class="mb-1"><span class="badge text-bg-info">seguir</span></p></a>
-        </div>
-        {% endfor %}
+        <div class="clear"></div>
         
-      </div>
-
-  </div>
-
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-{% else %}
-
-
-<div class="container-fluid">
-  <div class="row">
-    <div class="col-11">
-
-      <div class="container-post p-3">
-
-                {% if posts %}
-                {% for post in posts %}
-
-                <div class="post">
-                    <div class="post-head">
-                      <div class="user-name"><a href="{% url 'usuarios:perfil_user' post.user.username %}" class="text-dark text-decoration-none">{{ post.user.username }}</a></div>
-                      <div class="apagar"><a href=""><img src="{% static 'base/img/icons/botao-excluir.png' %}" alt=""></a></div>
-                    </div>
-                    <div class="post-img">
-                      <img src="{{ MEDIA_URL }}{{ post.imagem.url }}" alt="" >
-                    </div>
-                    <div class="post-footer">
-                      <a href=""><img src="{% static 'base/img/icons/gostar.png' %}" alt=""></a>
-                      <a href=""><img src="{% static 'base/img/icons/comente.png' %}" alt=""></a>
-                    </div>
-                    <div class="post-line"></div>
-                    <div class="post-comentarios">
-                      <ul class="list-group">
-                        {% if comentario in post.post_comentarios.all %}
-                        {% for comentario in post.post_comentarios.all %}
-                        <li class="list-group-item">{{ comentario.user.username }} - {{ comentario.comentario }}</li>
-                        {% endfor %}
-                        {% else %}
-                        <li class="list-group-item">Sem comentarios</li>
-                        {% endif %}
-                      </ul>
-                    </div>
-                    <div class="form-comentario">
-                      <form>
-                        <div class="form-group">
-                          <input type="text" placeholder="Faça seu comentario" class="campo-comentario">
-                          <button type="submit"><img src="{% static 'base/img/icons/mandar.png' %}" alt=""></button>
-                        </div>
-                      </form>
-                    </div>
-                </div>
-
-
-                {% endfor %}
-                {% endif %}
-       </div>
     </div>
+    <div class="footer">
+        <h4>Desenvolvido por - Lázaro Wendel</h4>
+    </div>
+    {% endif %}
+
+    <script src="https://code.jquery.com/jquery-3.7.0.js" integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM=" crossorigin="anonymous"></script>
+    <script src="{% static 'home/js/usuarios.js' %}"></script>
+    <script>
+        var staticImagePath = "{% static 'base/img/icons/user.png' %}";
+        var mediaUrl = "{{ MEDIA_URL }}";
+      </script>
+</body>
+
+</html>
 
 
-    <div class="col-1 profile-side p-0">
-        <div class="meu_perfil text-center mt-5">
-          <a href="{% url 'login:fazer_cadastro' %}" class="img-profile">
-            <img src="{% static 'home/img/perfil.png' %}" alt="" width="100px" height="100px">
-          </a>
-          <a href="{% url 'login:fazer_cadastro' %}">
-            <p class="mb-1"><span class="badge text-bg-success">criar conta</span></p>
-          </a>
-          <a href="{% url 'login:login' %}">
-            <p class="mb-1"><span class="badge text-bg-secondary">Faça login</span></p>
-          </a>
-          <hr class="mb-2">
-        </div>
-        {% for u in user %}
-        <div class="usuarios mt-1 text-center">
-          {% if u.profile.user_img %}
-          <img src="{{ MEDIA_URL }}{{ u.profile.user_img.url }}" alt="" width="50px" height="50px" class="rounded-5">
-          {% else %}
-          <img src="{% static 'home/img/perfil.png' %}" alt="" width="50px" height="50px" class="rounded-5">
-          {% endif %}
-          <a href="{% url 'usuarios:perfil_user' u.username %}"><p class="mb-1">{{ u.username }}</p></a>
-          <a href="{% url 'login:login' %}"><p class="mb-1"><span class="badge text-bg-info">seguir</span></p></a>
-        </div>
-        {% endfor %}
-        
-      </div>
-
-  </div>
-
-</div>
-{% endif %}
-{% include 'home/ajax.html' %}
-<script src="https://code.jquery.com/jquery-3.7.0.js" integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM=" crossorigin="anonymous"></script>
-<script src="{% static 'home/js/home.js' %}"></script>
-{% endblock %}
