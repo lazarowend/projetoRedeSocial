@@ -18,7 +18,7 @@
             <div class="form-buscar">
                 <form>
                     <input type="text" placeholder="Buscar" id="bucar_user" name="buscar" value="">
-                    <button type="button" onclick="buscar_cliente()"><img src="{% static 'base/img/icons/lupa.png' %}" alt="" width="32px" height="32px"></button>
+                    <button type="button" onclick="buscar_cliente(0)"><img src="{% static 'base/img/icons/lupa.png' %}" alt="" width="32px" height="32px"></button>
                 </form>
             </div>
             <ul class="nav-bar">
@@ -34,7 +34,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="{% url 'usuarios:logout_user' %}" >
+                    <a href="{% url 'usuarios:logout_user' %}">
                         <img src="{% static 'base/img/icons/sair.png' %}" alt="">
                     </a>
                 </li>
@@ -77,22 +77,16 @@
 
     <div class="feed">
         <div class="form-feed">
-                <form action="">
-                    <input type="text" placeholder="Buscar" id="form-feed">
-                </form>
+            <form>
+                <input type="text" placeholder="Buscar" id="bucar_user_mobile" name="buscar" value="">
+                <button type="button" onclick="buscar_cliente(1)"><img src="{% static 'base/img/icons/lupa.png' %}" alt="" width="32px" height="32px"></button>
+            </form>
         </div>
         <div class="lista-usuarios">
             <div class="usuarios-container">
-                {% for u in user %}
-                <div class="usuarios">
-                    {% if u.profile.user_img %}
-                  <img src="{{ u.profile.user_img.url }}" alt="" width="50px" height="50px">
-                    {% else %}
-                    <img src="{% static 'base/img/icons/user.png' %}" alt="" width="50px" height="50px">
-                    {% endif %}
-                  <a href="#"><p>{{ u.username }}</p></a>
+                <div class="user_recente">
+                    
                 </div>
-                {% endfor %}
               </div>
         </div>
         <div class="feed-post">
@@ -106,7 +100,7 @@
                         <img src="{% static 'base/img/icons/user.png' %}" alt="" width="40px" height="40px">
                     {% endif %}
                         <div>
-                            <a href="#"><p class="name">{{ post.user.username }}</p></a>
+                            <a href="{% url 'usuarios:perfil_user' post.user.id %}""><p class="name">{{ post.user.username }}</p></a>
                             <p class="post-date">{{ post.dt_criacao }}</p>
                         </div>
                     </div>
@@ -121,8 +115,16 @@
                     <img src="{{ MEDIA_URL }}{{ post.imagem.url }}" alt="">
                 </div>
                 <div class="post-link">
-                    <a href=""><img src="{% static 'base/img/icons/coracao.png' %}" alt=""></a>
-                    <a href=""><img src="{% static 'base/img/icons/comente (1).png' %}" alt=""></a>
+                    <button type="button" onclick="curtir({{ user_logado.id }}, {{ post.id }})" style="border: none; background-color: transparent; cursor: pointer; margin-left: 4px;">
+                        {% if user_logado in post.likes.all %}
+                        <img onclick="curtir({{ user_logado.id }}, {{ post.id }})" id="img_like{{ post.id }}" src="{% static 'base/img/icons/like.png' %}" alt="" width="24px" height="24px">
+                        {% else %}
+                        <img onclick="curtir({{ user_logado.id }}, {{ post.id }})" id="img_like{{ post.id }}" src="{% static 'base/img/icons/coracao.png' %}" alt="" width="24px" height="24px">
+                        {% endif %}
+                    </button>
+                    <button type="button" style="border: none; background-color: transparent; cursor: pointer; margin-left: 4px;">
+                        <img src="{% static 'base/img/icons/comente (1).png' %}" alt="" width="24px" height="24px">
+                    </button>
                 </div>
                 <div class="post-comentarios">
                     <ul class="comentarios-lista" id="lista_{{ post.id }}">
@@ -131,10 +133,10 @@
                         {% endfor %}
                     </ul>
 
-                    <form class="comentarios-form" action="GET">
+                    <div class="comentarios-form">
                         <input type="text" placeholder="Comentar" id="comentario{{post.id}}">
                         <button type="button" onclick="comentar('{{ post.id }}', document.getElementById('comentario{{post.id}}').value)"><img src="{% static 'base/img/icons/enviado.png' %}" alt=""></button>
-                    </form>
+                    </div>
                 </div>
             </div>
             {% endfor %}
@@ -144,8 +146,7 @@
 
         <div class="feed-info">
             <h3>Usuarios recentes</h3>
-            <div id="user_recente">
-
+            <div class="user_recente">
             </div>
         </div>
         <div class="clear"></div>
@@ -216,9 +217,10 @@
 
     <div class="feed">
         <div class="form-feed">
-                <form action="">
-                    <input type="text" placeholder="Buscar" id="form-feed">
-                </form>
+            <form>
+                <input type="text" placeholder="Buscar" id="bucar_user" name="buscar" value="">
+                <button type="button" onclick="buscar_cliente()"><img src="{% static 'base/img/icons/lupa.png' %}" alt="" width="32px" height="32px"></button>
+            </form>
         </div>
 
         <div class="feed-post">
@@ -269,9 +271,9 @@
 
         <div class="feed-info">
             <h3>Usuarios recentes</h3>
-                <div id="user_recente">
+            <div class="user_recente">
 
-                </div>
+            </div>
         </div>
         <div class="clear"></div>
         
@@ -283,6 +285,11 @@
 
     <script src="https://code.jquery.com/jquery-3.7.0.js" integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM=" crossorigin="anonymous"></script>
     <script src="{% static 'home/js/usuarios.js' %}"></script>
+    <script>
+        var staticImagePath = "{% static 'base/img/icons/user.png' %}";
+        var mediaUrl = "{{ MEDIA_URL }}";
+
+    </script>
 </body>
 
 </html>

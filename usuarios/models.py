@@ -11,6 +11,22 @@ class UserProfile(models.Model):
     seguidores = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='seguidores', blank=True)
     user_img = StdImageField(upload_to='img_perfil', blank=True)
 
+    def seguir_usuario(self, user):
+        self.seguidores.add(user)
+    
+    def deixar_de_seguir(self, user):
+        self.seguidores.remove(user)
+    
+    def verificar_seguidor(self, user):
+        return self.seguidores.filter(id=user.id).exists()
+
+    def quantidade_seguidores(self):
+        return self.seguidores.count()
+
+    def quantidade_seguindo(self):
+        return self.user.seguidores.count()
+
+
     def __str__(self):
         return self.user.username
 
@@ -33,6 +49,15 @@ class Post(models.Model):
     def __str__(self):
         return str(self.user)
     
+    def add_like(self, user):
+        self.likes.add(user)
+
+    def remove_like(self, user):
+        self.likes.remove(user)
+
+    def veificar_like(self, user):
+        return self.likes.filter(id=user.id).exists()
+
     class Meta:
         ordering = ['-id']
 

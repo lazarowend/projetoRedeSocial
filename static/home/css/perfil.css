@@ -278,6 +278,9 @@ ul.nav-bar-mobile {
 }
 
 .profile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     text-align: left;
     margin-bottom: 10px;
 }
@@ -285,7 +288,7 @@ ul.nav-bar-mobile {
 .profile img {
     width: 200px;
     height: 200px;
-    margin-right: 10px;
+    border-radius: 50%;
 }
 
 .btn-perfil {
@@ -372,7 +375,7 @@ ul.nav-bar-mobile {
     border-radius: 5px;
 }
 
-.feed-editar button[type="submit"], button[type="button"] {
+.feed-editar button[type="submit"],.feed-editar button[type="button"] {
     padding: 10px 20px;
     background-color: #ccc;
     color: #fff;

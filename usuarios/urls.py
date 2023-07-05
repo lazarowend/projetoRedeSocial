@@ -15,6 +15,13 @@ urlpatterns = [
     path('apagar_post/<int:id>/', views.apagar_post, name='apagar_post'),
 
     path('bucar_usuario/', views.bucar_usuario, name='bucar_usuario'),
+    path('curtir_post/<int:id>/', views.curtir_post, name='curtir_post'),
 
+
+    path('seguir_user/<int:id>/', views.seguir_user, name='seguir_user'),
+    path('carregar_seguidores/<int:id>/', views.carregar_seguidores, name='carregar_seguidores'),
+    path('carregar_seguindo/<int:id>/', views.carregar_seguindo, name='carregar_seguindo'),
+
+    path('atualizar_user/<int:id>/', views.atualizar_user, name='atualizar_user'),
 
 ]
