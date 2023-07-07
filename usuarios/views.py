@@ -301,5 +301,12 @@ def carregar_seguindo(request, id):
 
 def atualizar_user(request, id):
     if request.method == 'POST':
-        imagem = request.FILES['imagem']
-        
+        imagem = request.FILES.get['imagem']
+        nome = request.POST.get('name')
+        senha = request.POST.get('password')
+        email = request.POST.get('email')
+        id = request.user.id
+        print(type(imagem))
+
+        return redirect('usuarios:home')
+    
